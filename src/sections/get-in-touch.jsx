@@ -14,10 +14,9 @@ export default function GetInTouch() {
   const [status, setStatus] = useState(null);
   const [emailError, setEmailError] = useState("");
 
-  // Email validation regex
+  // Email validation - simpler and more flexible
   const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return email.includes("@") && email.includes(".") && email.length >= 5;
   };
 
   const handleChange = (e) => {
