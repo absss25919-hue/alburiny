@@ -12,40 +12,15 @@ export default function GetInTouch() {
 
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState(null);
-  const [emailError, setEmailError] = useState("");
-
-  // Email validation - simpler and more flexible
-  const validateEmail = (email) => {
-    return email.includes("@") && email.includes(".") && email.length >= 5;
-  };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-
-    // Validate email in real-time
-    if (name === "email") {
-      if (value.trim() === "") {
-        setEmailError("");
-      } else if (!validateEmail(value)) {
-        setEmailError("Please enter a valid email address");
-      } else {
-        setEmailError("");
-      }
-    }
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.name || !formData.email || !formData.phone || !formData.message) {
-      setStatus("error");
-      return;
-    }
-
-    // Validate email before submission
-    if (!validateEmail(formData.email)) {
-      setEmailError("Please enter a valid email address");
       setStatus("error");
       return;
     }
@@ -69,7 +44,6 @@ export default function GetInTouch() {
       }
 
       setStatus("success");
-      setEmailError("");
       setFormData({
         name: "",
         email: "",
@@ -138,18 +112,9 @@ export default function GetInTouch() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`w-full p-4 rounded-xl bg-white/20 border placeholder-white/70 focus:outline-none transition ${
-                    emailError
-                      ? "border-red-400 focus:border-red-400"
-                      : "border-white/30 focus:border-white"
-                  }`}
+                  className="w-full p-4 rounded-xl bg-white/20 border border-white/30 placeholder-white/70 focus:outline-none focus:border-white"
                   placeholder="Enter your email"
                 />
-                {emailError && (
-                  <p className="text-red-300 text-sm font-semibold mt-2">
-                    ⚠️ {emailError}
-                  </p>
-                )}
               </div>
 
               <div>
