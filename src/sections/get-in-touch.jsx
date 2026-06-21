@@ -98,6 +98,7 @@ export default function GetInTouch() {
     setLoading(true);
 
     try {
+      // Save to Supabase
       const { error } = await supabase.from("inquiries").insert([
         {
           full_name: formData.name.trim(),
@@ -109,6 +110,27 @@ export default function GetInTouch() {
       ]);
 
       if (error) throw error;
+
+      // Send email via Resend
+      try {
+        const emailResponse = await fetch("/api/send-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: formData.name.trim(),
+            email: formData.email.trim().toLowerCase(),
+            phone: formData.phone.trim(),
+            company: formData.company.trim() || "Not provided",
+            message: formData.message.trim(),
+          }),
+        });
+
+        if (!emailResponse.ok) {
+          console.warn("Email sending failed, but inquiry was saved");
+        }
+      } catch (emailError) {
+        console.warn("Email service error, but inquiry was saved:", emailError);
+      }
 
       setSubmitStatus("success");
       setFormData(INITIAL_FORM);
