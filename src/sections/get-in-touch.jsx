@@ -109,7 +109,15 @@ export default function GetInTouch() {
         },
       ]);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase Error Details:", {
+          message: error.message,
+          code: error.code,
+          status: error.status,
+          details: error.details,
+        });
+        throw error;
+      }
 
       // Send email via Resend
       try {
@@ -125,18 +133,26 @@ export default function GetInTouch() {
           }),
         });
 
+        const emailData = await emailResponse.json();
+
         if (!emailResponse.ok) {
-          console.warn("Email sending failed, but inquiry was saved");
+          console.warn("Email API error:", {
+            status: emailResponse.status,
+            statusText: emailResponse.statusText,
+            data: emailData,
+          });
         }
       } catch (emailError) {
-        console.warn("Email service error, but inquiry was saved:", emailError);
+        console.warn("Email service fetch error, but inquiry was saved:", emailError);
       }
 
       setSubmitStatus("success");
       setFormData(INITIAL_FORM);
       setErrors(INITIAL_ERRORS);
     } catch (err) {
-      console.error("Supabase insert error:", err);
+      console.error("Complete Error Object:", err);
+      console.error("Error Message:", err?.message);
+      console.error("Error Code:", err?.code);
 
       // Distinguish network/server issues from other errors
       const isNetworkError =
