@@ -26,7 +26,7 @@ export default async function handler(req, res) {
   try {
     // Send email to company
     const response = await resend.emails.send({
-      from: 'support@alburiny.ae',
+      from: 'Website Contact Form <info@alburiny.ae>',
       to: 'info@alburiny.ae',
       subject: `New Inquiry from ${name}`,
       html: `
@@ -60,7 +60,7 @@ export default async function handler(req, res) {
     // Send confirmation email to user
     try {
       await resend.emails.send({
-        from: 'support@alburiny.ae',
+        from: 'info@alburiny.ae',
         to: email,
         subject: 'We received your inquiry - Al Buriny',
         html: `
